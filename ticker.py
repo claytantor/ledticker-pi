@@ -9,9 +9,9 @@ import boto3
 import botocore
 import logging
 import argparse
-import docopt
 
 def main(argv):
+    print "starting ticker app."
     parser = argparse.ArgumentParser()
     parser.add_argument('--log', type=str, default="INFO", required=False,
                         help='which log level. DEBUG, INFO, WARNING, CRITICAL')
