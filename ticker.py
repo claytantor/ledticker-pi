@@ -11,10 +11,8 @@ import logging
 import argparse
 from Queue import Queue
 
-
 from samplebase import SampleBase
 from rgbmatrix import graphics
-
 
 class RunText(SampleBase):
 
@@ -67,7 +65,6 @@ class RunText(SampleBase):
                     # f"Failed to delete messages: entries={entries!r} resp={resp!r}"
                 )
 
-
     def display_message(self, message):
 
         offscreen_canvas = self.matrix.CreateFrameCanvas()
@@ -75,7 +72,7 @@ class RunText(SampleBase):
         font.LoadFont(self.args.font)
         textColor = graphics.Color(255, 255, 0)
         pos = offscreen_canvas.width
-	display_active = True
+        display_active = True
 
         while display_active:
             offscreen_canvas.Clear()
@@ -92,33 +89,30 @@ class RunText(SampleBase):
 
 
     def run(self):
-        print self.args.config	
-	with open(self.args.config, 'r') as f:
-        	config = yaml.load(f)
+        with open(self.args.config, 'r') as f:
+            config = yaml.load(f)
 
-		session = boto3.Session(
-            		aws_access_key_id=config['aws']['credentials']['aws_access_key_id'],
-            		aws_secret_access_key=config['aws']['credentials']['aws_secret_access_key'],
-            		region_name=config['aws']['region']
-        	)
+        session = boto3.Session(
+            aws_access_key_id=config['aws']['credentials']['aws_access_key_id'],
+            aws_secret_access_key=config['aws']['credentials']['aws_secret_access_key'],
+            region_name=config['aws']['region']
+        )
 
-        	while True:
+        while True:
+            for message in self.get_messages_from_queue(
+                session,
+                config['aws']['sqs']['message_url']):
+                    print(json.dumps(message))
+                    self.display_message(message['Body'])
 
-            		for message in self.get_messages_from_queue(
-                    		session,
-                    		config['aws']['sqs']['message_url']):
-
-                		print(json.dumps(message))
-                		self.display_message(message['Body'])
-
-            		time.sleep(10)
+            time.sleep(10)
 
 def main(argv):
     print "starting ticker app."
 
     run_text = RunText()
     if (not run_text.process()):
-    	run_text.print_help()
+        run_text.print_help()
 
 if __name__ == "__main__":
     main(sys.argv[1:])
