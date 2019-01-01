@@ -3,7 +3,7 @@ Description=ledticker
 After=multi-user.target
 
 [Service]
-ExecStart=/home/pi/projects/ledticker-pi/venv/bin/python -u /home/pi/projects/ledticker-pi/ticker.py --log DEBUG --config /home/pi/projects/ledticker-pi/config.yaml
+ExecStart=/home/pi/projects/ledticker-pi/venv/bin/python -u /home/pi/projects/ledticker-pi/ticker.py --log DEBUG --config /home/pi/projects/ledticker-pi/config.yaml --font /home/pi/projects/ledticker-pi/fonts/7x13.bdf
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=ledticker

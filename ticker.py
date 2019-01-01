@@ -18,20 +18,15 @@ from rgbmatrix import graphics
 
 class RunText(SampleBase):
 
-    def __init__(self, config, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(RunText, self).__init__(*args, **kwargs)
 
         self.parser.add_argument('--log', type=str, default="INFO", required=False,
                         help='which log level. DEBUG, INFO, WARNING, CRITICAL')
         self.parser.add_argument('--config', type=str, required=True, default='config.yaml',
                         help='the name of the configuration section to use.')
-
-
-        self.session = boto3.Session(
-            aws_access_key_id=config['aws']['credentials']['aws_access_key_id'],
-            aws_secret_access_key=config['aws']['credentials']['aws_secret_access_key'],
-            region_name=config['aws']['region']
-        )
+        self.parser.add_argument('--font', type=str, required=True, default='./fonts/7x13.bdf',
+                        help='the path to the font to use')
 
     def get_messages_from_queue(self, session, queue_url):
         """Generates messages from an SQS queue.
@@ -77,7 +72,7 @@ class RunText(SampleBase):
 
         offscreen_canvas = self.matrix.CreateFrameCanvas()
         font = graphics.Font()
-        font.LoadFont("./fonts/7x13.bdf")
+        font.LoadFont(self.args.font)
         textColor = graphics.Color(255, 255, 0)
         pos = offscreen_canvas.width
 	display_active = True
@@ -97,7 +92,7 @@ class RunText(SampleBase):
 
 
     def run(self):
-	
+        print self.args.config	
 	with open(self.args.config, 'r') as f:
         	config = yaml.load(f)
 
@@ -121,13 +116,9 @@ class RunText(SampleBase):
 def main(argv):
     print "starting ticker app."
 
-
-    with open('config.yaml', 'r') as f:
-        config = yaml.load(f)
-
-        run_text = RunText(config)
-        if (not run_text.process()):
-            run_text.print_help()
+    run_text = RunText()
+    if (not run_text.process()):
+    	run_text.print_help()
 
 if __name__ == "__main__":
     main(sys.argv[1:])
