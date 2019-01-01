@@ -20,8 +20,12 @@ class RunText(SampleBase):
 
     def __init__(self, config, *args, **kwargs):
         super(RunText, self).__init__(*args, **kwargs)
-        self.config = config
-        # self.q = Queue(maxsize=0)
+
+        self.parser.add_argument('--log', type=str, default="INFO", required=False,
+                        help='which log level. DEBUG, INFO, WARNING, CRITICAL')
+        self.parser.add_argument('--config', type=str, required=True, default='config.yaml',
+                        help='the name of the configuration section to use.')
+
 
         self.session = boto3.Session(
             aws_access_key_id=config['aws']['credentials']['aws_access_key_id'],
@@ -68,23 +72,15 @@ class RunText(SampleBase):
                     # f"Failed to delete messages: entries={entries!r} resp={resp!r}"
                 )
 
-    def add_text(self, text):
-        self.q.put(text)
-
 
     def display_message(self, message):
-
-        #message = self.q.get()
 
         offscreen_canvas = self.matrix.CreateFrameCanvas()
         font = graphics.Font()
         font.LoadFont("./fonts/7x13.bdf")
         textColor = graphics.Color(255, 255, 0)
         pos = offscreen_canvas.width
-
-        # start_time = time.time()
-        # elapsed_time = time.time() - start_time
-        display_active = True
+	display_active = True
 
         while display_active:
             offscreen_canvas.Clear()
@@ -101,20 +97,26 @@ class RunText(SampleBase):
 
 
     def run(self):
+	
+	with open(self.args.config, 'r') as f:
+        	config = yaml.load(f)
 
-        while True:
+		session = boto3.Session(
+            		aws_access_key_id=config['aws']['credentials']['aws_access_key_id'],
+            		aws_secret_access_key=config['aws']['credentials']['aws_secret_access_key'],
+            		region_name=config['aws']['region']
+        	)
 
-            for message in self.get_messages_from_queue(
-                    self.session,
-                    self.config['aws']['sqs']['message_url']):
+        	while True:
 
-                print(json.dumps(message))
-                #self.q.put(message['Body'])
-                self.display_message(message['Body'])
+            		for message in self.get_messages_from_queue(
+                    		session,
+                    		config['aws']['sqs']['message_url']):
 
-            time.sleep(10)
+                		print(json.dumps(message))
+                		self.display_message(message['Body'])
 
-
+            		time.sleep(10)
 
 def main(argv):
     print "starting ticker app."
