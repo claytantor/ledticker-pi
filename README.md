@@ -1,5 +1,11 @@
 # ledticker-pi
-allows a raspberry pi to open a door with a key code in the cloud.
+allows a raspberry pi to drve an LED display as an IOT devide in AWS.
+
+## research and background
+
+* Adafruit RGB Matrix Hat for RPI - https://learn.adafruit.com/adafruit-rgb-matrix-plus-real-time-clock-hat-for-raspberry-pi
+* Controlling up to three chains of 64x64, 32x32, 16x32 or similar RGB LED displays using Raspberry Pi GPIO - https://github.com/hzeller/rpi-rgb-led-matrix
+* Getting Started With RGB Matrix Panel - https://www.hackster.io/idreams/getting-started-with-rgb-matrix-panel-adaa49
 
 
 ## install for python 2.7
@@ -49,14 +55,7 @@ sudo systemctl restart rsyslog
 
 ## check the status of the service
 ```
-pi@raspberrypi:~ $ sudo systemctl status ledticker.service
+sudo systemctl status ledticker.service
 ```
 
-# led matrix
 
-https://github.com/hzeller/rpi-rgb-led-matrix 
-
-https://learn.adafruit.com/adafruit-rgb-matrix-plus-real-time-clock-hat-for-raspberry-pi
-
-
-#
