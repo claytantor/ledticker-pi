@@ -1,7 +1,12 @@
 # ledticker-pi
-allows a raspberry pi to drve an LED display as an IOT devide in AWS.
+allows a raspberry pi to drive an LED display as an IOT divide in AWS.
+The idea is to make a IOT thing that is basically just a slave to the messages
+sent to a queue. This allows the device to be dumb and multiple suppliers to
+be as sophisticated as needed.
+
 
 ## research and background
+These are the guides that accelerated building this project extensively.
 
 * Adafruit RGB Matrix Hat for RPI - https://learn.adafruit.com/adafruit-rgb-matrix-plus-real-time-clock-hat-for-raspberry-pi
 * Controlling up to three chains of 64x64, 32x32, 16x32 or similar RGB LED displays using Raspberry Pi GPIO - https://github.com/hzeller/rpi-rgb-led-matrix
@@ -44,10 +49,10 @@ Then, assuming your distribution is using rsyslog to manage syslogs, create a fi
 
 if $programname == '<your program identifier>' then /path/to/log/file.log
 & stop
-restart rsyslog (sudo systemctl restart rsyslog) and enjoy! Your program stdout/stderr will still be available through journalctl (sudo journalctl -u <your program identifier>) but they will also be available in your file of choice. 
+restart rsyslog (sudo systemctl restart rsyslog) and enjoy! Your program stdout/stderr will still be available through journalctl (sudo journalctl -u <your program identifier>) but they will also be available in your file of choice.
 
 ```
-sudo cp ledticker.conf /etc/rsyslog.d/ledticker.conf 
+sudo cp ledticker.conf /etc/rsyslog.d/ledticker.conf
 sudo systemctl daemon-reload
 sudo systemctl restart ledticker.service
 sudo systemctl restart rsyslog
@@ -57,5 +62,3 @@ sudo systemctl restart rsyslog
 ```
 sudo systemctl status ledticker.service
 ```
-
-

@@ -5,14 +5,18 @@ import sys
 import yaml
 import json
 import time
+import os
 import boto3
 import botocore
+import base64
 import logging
 import argparse
-from Queue import Queue
-
+import math
+import datetime
 from samplebase import SampleBase
 from rgbmatrix import graphics
+
+# base_dir = os.path.join(os.path.dirname(__file__), 'my_file')
 
 class RunText(SampleBase):
 
@@ -65,28 +69,80 @@ class RunText(SampleBase):
                     # f"Failed to delete messages: entries={entries!r} resp={resp!r}"
                 )
 
-    def display_message(self, message):
+    def get_font_path(self, message):
+        print json.dumps(message)
+        font_path = os.path.join(os.path.dirname(__file__), 'fonts/7x13.bdf')
+        if 'type' in message and message['type'] == 'text':
+            font_path =  os.path.join(os.path.dirname(__file__), 'fonts/7x13.bdf')
+        elif 'type' in message and message['type'] == 'text_sm':
+            font_path =  os.path.join(os.path.dirname(__file__), 'fonts/5x8.bdf')
+        #print font_path
+        return font_path
+
+    def display_text_scrolling(self, message):
 
         offscreen_canvas = self.matrix.CreateFrameCanvas()
+
         font = graphics.Font()
-        font.LoadFont(self.args.font)
+
+        font.LoadFont(self.get_font_path(message))
         textColor = graphics.Color(255, 255, 0)
         pos = offscreen_canvas.width
-        display_active = True
 
-        while display_active:
+        start_time = time.time()
+        elapsed_time = time.time() - start_time
+        elapsed_time_boundry = 10.0
+        if 'elapsed' in message:
+            elapsed_time_boundry = message['elapsed']
+
+        while elapsed_time < elapsed_time_boundry:
+            #print time.time(), start_time
+
             offscreen_canvas.Clear()
-            len = graphics.DrawText(offscreen_canvas, font, pos, 10, textColor, message)
+            len = graphics.DrawText(offscreen_canvas, font, pos, 10, textColor, message['body'])
             pos -= 1
             if (pos + len < 0):
                 pos = offscreen_canvas.width
-                display_active = False
 
             time.sleep(0.05)
+            elapsed_time = time.time() - start_time
             offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
+            #print elapsed_time, elapsed_time_boundry
 
         offscreen_canvas.Clear()
 
+    def display_text_timed(self, message):
+
+        offscreen_canvas = self.matrix.CreateFrameCanvas()
+        font = graphics.Font()
+        font.LoadFont(self.get_font_path(message))
+        textColor = graphics.Color(255, 255, 0)
+
+        len = graphics.DrawText(offscreen_canvas, font, 0, 10, textColor, message['body'])
+
+        pos = math.ceil((offscreen_canvas.width-len)/2.0)
+        #print offscreen_canvas.width,len,pos
+
+        start_time = time.time()
+        elapsed_time = time.time() - start_time
+        elapsed_time_boundry = 10.0
+        if 'elapsed' in message:
+            elapsed_time_boundry = message['elapsed']
+
+        while elapsed_time < elapsed_time_boundry:
+            #print time.time(),start_time
+            offscreen_canvas.Clear()
+            len = graphics.DrawText(offscreen_canvas, font, pos, 10, textColor, message['body'])
+            time.sleep(1)
+            elapsed_time = time.time() - start_time
+            offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
+            #print elapsed_time, elapsed_time_boundry
+
+        offscreen_canvas.Clear()
+
+    def decode_message_model(self, b64encoded_json):
+        decoded_data = base64.decodestring(b64encoded_json)
+        return json.loads(decoded_data)
 
     def run(self):
         with open(self.args.config, 'r') as f:
@@ -102,8 +158,17 @@ class RunText(SampleBase):
             for message in self.get_messages_from_queue(
                 session,
                 config['aws']['sqs']['message_url']):
-                    print(json.dumps(message))
-                    self.display_message(message['Body'])
+                    decoded_model = self.decode_message_model(message['Body'])
+                    print(json.dumps(decoded_model))
+                    #this needs to be a factory
+                    if 'behavior' not in decoded_model and 'type' not in decoded_model:
+                        self.display_text_scrolling(decoded_model)
+                    elif decoded_model['type'].startswith('text') and 'behavior' in decoded_model and decoded_model['behavior'] == 'scrolling':
+                        self.display_text_scrolling(decoded_model)
+                    elif decoded_model['type'].startswith('text') and 'behavior' not in decoded_model:
+                        self.display_text_scrolling(decoded_model)
+                    elif 'behavior' in decoded_model and decoded_model['behavior'] == 'fixed' and 'elapsed' in decoded_model and decoded_model['type'].startswith('text'):
+                        self.display_text_timed(decoded_model)
 
             time.sleep(10)
 
