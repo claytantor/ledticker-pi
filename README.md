@@ -62,3 +62,23 @@ sudo systemctl restart rsyslog
 ```
 sudo systemctl status ledticker.service
 ```
+
+# rotating logs
+you will want to rotate logs so your disk doesnt fill up with logs. your conf file for logrotation looks like this in `/etc/logrotate.conf`:
+
+```
+/var/log/ledticker.log {
+    daily
+    missingok
+    rotate 7
+    maxage 7
+    dateext
+    dateyesterday
+}
+```
+
+make a crontab that executes logrotate daily
+
+```
+/usr/sbin/logrotate /etc/logrotate.conf
+```
