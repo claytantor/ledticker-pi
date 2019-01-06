@@ -112,4 +112,5 @@ uninstall.txt
 config.yaml
 
 
-
+iot/keys/
+iot/keys/*
