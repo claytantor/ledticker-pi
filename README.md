@@ -13,15 +13,6 @@ These are the guides that accelerated building this project extensively.
 * Getting Started With RGB Matrix Panel - https://www.hackster.io/idreams/getting-started-with-rgb-matrix-panel-adaa49
 
 
-## install for python3
-```
-sudo apt-get install virtualenv
-python3 -m venv --system-site-packages ./venv 
-source venv/bin/activate
-curl https://bootstrap.pypa.io/get-pip.py | python
-pip install --upgrade pip
-pip install -r requirements.txt
-```
 
 ## installing flashlex-pi-python
 
@@ -29,6 +20,13 @@ pip install -r requirements.txt
 git clone https://github.com/claytantor/flashlex-pi-python.git
 cd flashlex-pi-python
 sudo python setup.py install
+```
+
+## install for python 3
+```
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 ```
 
 ## updating your rasperry pi
