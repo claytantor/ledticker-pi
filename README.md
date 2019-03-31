@@ -12,14 +12,13 @@ These are the guides that accelerated building this project extensively.
 * Controlling up to three chains of 64x64, 32x32, 16x32 or similar RGB LED displays using Raspberry Pi GPIO - https://github.com/hzeller/rpi-rgb-led-matrix
 * Getting Started With RGB Matrix Panel - https://www.hackster.io/idreams/getting-started-with-rgb-matrix-panel-adaa49
 
-
-## install for python 2.7
+## install for python 3
 ```
-virtualenv venv
-curl https://bootstrap.pypa.io/get-pip.py | python
-pip install --upgrade pip
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 ```
+
 
 ## updating your rasperry pi
 ```

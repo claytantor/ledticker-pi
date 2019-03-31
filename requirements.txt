@@ -1,5 +1,7 @@
-pyyaml>=4.2b1
 requests==2.20.1
 boto3==1.9.58
 RPi.GPIO==0.6.3
-
+AWSIoTPythonSDK==1.4.4
+tinydb==3.13.0
+PyYAML==5.1
+pathlib==1.0.1
