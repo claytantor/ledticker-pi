@@ -49,10 +49,9 @@ class LedDisplay(SampleBase):
         with open(self.args.config, 'r') as f:
             config = yaml.load(f)
 
-
         while True:
             for message in self.get_messages(config):
-                decoded_model = self.decode_message_model(message['Body'])
+                decoded_model = message['message']
 
                 print('decoded message: {0}'.format(json.dumps(decoded_model)))
 
