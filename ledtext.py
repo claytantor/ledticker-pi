@@ -106,6 +106,7 @@ class ScrollingText(LedText):
             return False
 
     def display(self):
+        print("in display")
         offscreen_canvas = self.runner.matrix.CreateFrameCanvas()
         font = graphics.Font()
         font.LoadFont(self.get_font_path(self.message))
@@ -129,3 +130,4 @@ class ScrollingText(LedText):
 
         offscreen_canvas.Clear()
         offscreen_canvas = self.runner.matrix.SwapOnVSync(offscreen_canvas)
+        print("done with display")

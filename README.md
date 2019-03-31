@@ -29,17 +29,11 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## updating your rasperry pi
+# running on cli
 ```
-sudo apt-get update
-sudo apt-get -y install python-dev python3-rpi.gpio
-sudo apt-get -y install i2c-tools
-sudo apt-get y install python-smbus
+sudo /home/pi/projects/ledticker-pi/venv/bin/python -u /home/pi/projects/ledticker-pi/flashlex.py --led-no-hardware-pulse true -m adafruit-hat -r 32 --led-cols 32 --log DEBUG --config /home/pi/projects/ledticker-pi/config.yml 
+```
 
-virtualenv --system-site-packages venv
-pip install -r requirements.txt
-pip install --no-cache-dir PyYAML
-```
 
 ## creating the systemd service
 Instructions for setting up your service can be found at https://www.raspberrypi-spy.co.uk/2015/10/how-to-autorun-a-python-script-on-boot-using-systemd/

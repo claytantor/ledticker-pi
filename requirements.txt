@@ -4,7 +4,5 @@ RPi.GPIO==0.6.3
 AWSIoTPythonSDK==1.4.4
 tinydb==3.13.0
 PyYAML==5.1
-<<<<<<< HEAD
-=======
 pathlib==1.0.1
->>>>>>> master
+Pillow==5.4.1
