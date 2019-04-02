@@ -69,6 +69,8 @@ class FixedText(LedText):
         len = graphics.DrawText(offscreen_canvas, font, 0, 10, textColor, '{0}'.format(self.message['body']))
 
         pos = math.ceil((offscreen_canvas.width-len)/2.0)
+        height = math.ceil(offscreen_canvas.width/2.0)+math.ceil((font.height-2)/2.0)
+        # print("height: {0} font.height: {1}".format(height, font.height))
 
         start_time = time.time()
         elapsed_time = time.time() - start_time
@@ -79,7 +81,7 @@ class FixedText(LedText):
         while elapsed_time < elapsed_time_boundry:
             #print time.time(),start_time
             offscreen_canvas.Clear()
-            len = graphics.DrawText(offscreen_canvas, font, pos, 10, textColor, '{0}'.format(self.message['body']))
+            len = graphics.DrawText(offscreen_canvas, font, pos, height, textColor, '{0}'.format(self.message['body']))
             time.sleep(1)
             elapsed_time = time.time() - start_time
             offscreen_canvas = self.runner.matrix.SwapOnVSync(offscreen_canvas)
@@ -106,7 +108,6 @@ class ScrollingText(LedText):
             return False
 
     def display(self):
-        print("in display")
         offscreen_canvas = self.runner.matrix.CreateFrameCanvas()
         font = graphics.Font()
         font.LoadFont(self.get_font_path(self.message))
@@ -115,11 +116,13 @@ class ScrollingText(LedText):
         textColor = self.get_text_color(self.message)
 
         pos = offscreen_canvas.width
+        #height = math.ceil(offscreen_canvas.width/2.0) +math.ceil(font.height/2.0)-1
+        height = math.ceil(offscreen_canvas.width/2.0)+math.ceil((font.height-2)/2.0)
         scrolling = True
 
         while scrolling:
             offscreen_canvas.Clear()
-            len = graphics.DrawText(offscreen_canvas, font, pos, 10, textColor, '{0}'.format(self.message['body']))
+            len = graphics.DrawText(offscreen_canvas, font, pos, height, textColor, '{0}'.format(self.message['body']))
             pos -= 1
             if (pos + len < 0):
                 pos = offscreen_canvas.width
@@ -130,4 +133,3 @@ class ScrollingText(LedText):
 
         offscreen_canvas.Clear()
         offscreen_canvas = self.runner.matrix.SwapOnVSync(offscreen_canvas)
-        print("done with display")

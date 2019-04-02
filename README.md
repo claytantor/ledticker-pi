@@ -85,5 +85,4 @@ make a crontab that executes logrotate daily
 /usr/sbin/logrotate /etc/logrotate.conf
 ```
 
-/home/pi/projects/ledticker-pi/venv/bin/python -u /home/pi/projects/ledticker-pi/flashlex.py --led-no-hardware-pulse true -m adafruit-hat -r 32 --led-cols 32 --log DEBUG --config /home/pi/projects/ledticker-pi/config.yml
 
