@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import sys
+import sys, traceback
 import json
 import time
 import os
@@ -30,15 +30,21 @@ class LedText(object):
         return font_path
 
     def get_text_color(self, message):
-        textColor = graphics.Color(255, 255, 0)
+        textColor = graphics.Color(0, 255, 0)
+
 
         if 'color' in message:
+            print(message['color'])
             try:
                 color_tuple = hex2rgb(message['color'])
                 textColor = graphics.Color(color_tuple[0],
                                            color_tuple[1],
                                            color_tuple[2])
             except:
+                print("problem with color lookup")
+                print("-"*60)
+                traceback.print_exc(file=sys.stdout)
+                print("-"*60)
                 pass
 
         return textColor
