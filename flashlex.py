@@ -11,6 +11,8 @@ import datetime
 
 from ledtext import FixedText, ScrollingText
 from ledmetric import NumberMetric
+from ledweather import CurrentWeather, ForecastWeather
+
 from samplebase import SampleBase
 from rgbmatrix import graphics
 
@@ -56,7 +58,6 @@ decoded message: {"payload": {"message": {"thingName": "foobar30", "text": "woop
 
                 #this needs to be a factory
                 if ScrollingText.matches(decoded_model):
-                    print("scrolling text")
                     text = ScrollingText(self,decoded_model)
                     text.display()
                 elif FixedText.matches(decoded_model):
@@ -65,6 +66,13 @@ decoded message: {"payload": {"message": {"thingName": "foobar30", "text": "woop
                 elif NumberMetric.matches(decoded_model):
                     metric = NumberMetric(self, decoded_model)
                     metric.display()
+                elif CurrentWeather.matches(decoded_model):
+                    weather = CurrentWeather(self, decoded_model)
+                    weather.display()
+                elif ForecastWeather.matches(decoded_model):
+                    weather = ForecastWeather(self, decoded_model)
+                    weather.display()
+
 
             time.sleep(10)
 
