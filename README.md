@@ -13,8 +13,16 @@ These are the guides that accelerated building this project extensively.
 * Getting Started With RGB Matrix Panel - https://www.hackster.io/idreams/getting-started-with-rgb-matrix-panel-adaa49
 
 
+# install for python 3
+```
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
 ## installing flashlex-pi-python
+This is a flashlex project. That is it uses the flashlex cloud IOT framework to send messages to the Raspberry Pi. You can get 
+more info on flashlex at [flashlex.com](https://flashlex.com)
 
 ```
 git clone https://github.com/claytantor/flashlex-pi-python.git
@@ -22,18 +30,10 @@ cd flashlex-pi-python
 sudo python setup.py install
 ```
 
-## install for python 3
-```
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-# running on cli
+## running on cli
 ```
 sudo /home/pi/projects/ledticker-pi/venv/bin/python -u /home/pi/projects/ledticker-pi/flashlex.py --led-no-hardware-pulse true -m adafruit-hat -r 32 --led-cols 32 --log DEBUG --config /home/pi/projects/ledticker-pi/config.yml 
 ```
-
 
 ## creating the systemd service
 Instructions for setting up your service can be found at https://www.raspberrypi-spy.co.uk/2015/10/how-to-autorun-a-python-script-on-boot-using-systemd/
@@ -49,9 +49,15 @@ sudo systemctl enable ledticker.service
 
 Then, assuming your distribution is using rsyslog to manage syslogs, create a file in /etc/rsyslog.d/<new_file>.conf with the following content:
 
+```
 if $programname == '<your program identifier>' then /path/to/log/file.log
 & stop
-restart rsyslog (sudo systemctl restart rsyslog) and enjoy! Your program stdout/stderr will still be available through journalctl (sudo journalctl -u <your program identifier>) but they will also be available in your file of choice.
+```
+
+restart rsyslog (sudo systemctl restart rsyslog) and enjoy! Your program stdout/stderr will still be available through journalctl  `(sudo journalctl -u <your program identifier>)` but they will also be available in your file of choice.
+
+We have included a conf file that makes this easier. Use the 
+instructions below to enable rsyslog for ledticker.
 
 ```
 sudo cp ledticker.conf /etc/rsyslog.d/ledticker.conf
@@ -65,7 +71,7 @@ sudo systemctl restart rsyslog
 sudo systemctl status ledticker.service
 ```
 
-# rotating logs
+## rotating logs
 you will want to rotate logs so your disk doesnt fill up with logs. your conf file for logrotation looks like this in `/etc/logrotate.conf`:
 
 ```

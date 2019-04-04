@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 import sys
 import json
 import time
@@ -63,7 +60,6 @@ class FixedText(LedText):
         font = graphics.Font()
         font.LoadFont(self.get_font_path(self.message))
 
-        #textColor = graphics.Color(255, 255, 0)
         textColor = self.get_text_color(self.message)
 
         len = graphics.DrawText(offscreen_canvas, font, 0, 10, textColor, '{0}'.format(self.message['body']))
@@ -112,7 +108,6 @@ class ScrollingText(LedText):
         font = graphics.Font()
         font.LoadFont(self.get_font_path(self.message))
 
-        #textColor = graphics.Color(255, 255, 0)
         textColor = self.get_text_color(self.message)
 
         pos = offscreen_canvas.width
