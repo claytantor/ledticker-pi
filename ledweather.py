@@ -123,6 +123,7 @@ class ForecastWeather(LedWeather):
 
     @staticmethod
     def matches(message):
+        print (message)
         if 'body' in message and 'behavior' in message and message['behavior'] == 'forecast' and message['type'] == 'weather':
             return True
         else:
