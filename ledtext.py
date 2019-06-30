@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import sys
+import sys, traceback
 import json
 import time
 import os
@@ -30,15 +30,21 @@ class LedText(object):
         return font_path
 
     def get_text_color(self, message):
-        textColor = graphics.Color(255, 255, 0)
+        textColor = graphics.Color(0, 255, 0)
+
 
         if 'color' in message:
+            print(message['color'])
             try:
                 color_tuple = hex2rgb(message['color'])
                 textColor = graphics.Color(color_tuple[0],
                                            color_tuple[1],
                                            color_tuple[2])
             except:
+                print("problem with color lookup")
+                print("-"*60)
+                traceback.print_exc(file=sys.stdout)
+                print("-"*60)
                 pass
 
         return textColor
@@ -63,12 +69,13 @@ class FixedText(LedText):
         font = graphics.Font()
         font.LoadFont(self.get_font_path(self.message))
 
-        #textColor = graphics.Color(255, 255, 0)
         textColor = self.get_text_color(self.message)
 
         len = graphics.DrawText(offscreen_canvas, font, 0, 10, textColor, '{0}'.format(self.message['body']))
 
         pos = math.ceil((offscreen_canvas.width-len)/2.0)
+        height = math.ceil(offscreen_canvas.width/2.0)+math.ceil((font.height-2)/2.0)
+        # print("height: {0} font.height: {1}".format(height, font.height))
 
         start_time = time.time()
         elapsed_time = time.time() - start_time
@@ -79,7 +86,7 @@ class FixedText(LedText):
         while elapsed_time < elapsed_time_boundry:
             #print time.time(),start_time
             offscreen_canvas.Clear()
-            len = graphics.DrawText(offscreen_canvas, font, pos, 10, textColor, '{0}'.format(self.message['body']))
+            len = graphics.DrawText(offscreen_canvas, font, pos, height, textColor, '{0}'.format(self.message['body']))
             time.sleep(1)
             elapsed_time = time.time() - start_time
             offscreen_canvas = self.runner.matrix.SwapOnVSync(offscreen_canvas)
@@ -110,15 +117,16 @@ class ScrollingText(LedText):
         font = graphics.Font()
         font.LoadFont(self.get_font_path(self.message))
 
-        #textColor = graphics.Color(255, 255, 0)
         textColor = self.get_text_color(self.message)
 
         pos = offscreen_canvas.width
+        #height = math.ceil(offscreen_canvas.width/2.0) +math.ceil(font.height/2.0)-1
+        height = math.ceil(offscreen_canvas.width/2.0)+math.ceil((font.height-2)/2.0)
         scrolling = True
 
         while scrolling:
             offscreen_canvas.Clear()
-            len = graphics.DrawText(offscreen_canvas, font, pos, 10, textColor, '{0}'.format(self.message['body']))
+            len = graphics.DrawText(offscreen_canvas, font, pos, height, textColor, '{0}'.format(self.message['body']))
             pos -= 1
             if (pos + len < 0):
                 pos = offscreen_canvas.width
