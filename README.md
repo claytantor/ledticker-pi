@@ -25,8 +25,8 @@ This is a flashlex project. That is it uses the flashlex cloud IOT framework to 
 more info on flashlex at [flashlex.com](https://flashlex.com)
 
 ```
-git clone https://github.com/claytantor/flashlex-pi-python.git
-cd flashlex-pi-python
+git clone https://github.com/claytantor/flashlex-iot-python.git
+cd flashlex-iot-python
 sudo python setup.py install
 ```
 

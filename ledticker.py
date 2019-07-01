@@ -16,7 +16,9 @@ from ledweather import CurrentWeather, ForecastWeather
 from samplebase import SampleBase
 from rgbmatrix import graphics
 
-from flashlexpi.sdk import FlashlexSDK
+from flashlexiot.sdk import FlashlexSDK
+
+
 
 class LedDisplay(SampleBase):
 
