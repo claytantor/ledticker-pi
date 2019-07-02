@@ -32,15 +32,11 @@ class LedDisplay(SampleBase):
 
 
     def get_messages(self, config):
-
-            fn = "{0}/flashlex-pi-python/keys/config.yml".format(pathlib.Path(__file__).resolve().parents[1])
-            sdk = FlashlexSDK(fn)
+            sdk = FlashlexSDK(config)
             messages = sdk.getSubscribedMessages()
             for message in messages:
                 yield message
                 sdk.removeMessageFromStore(message)
-
-
 
     def run(self):
         """
