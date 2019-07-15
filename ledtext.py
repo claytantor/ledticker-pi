@@ -34,7 +34,6 @@ class LedText(object):
 
 
         if 'color' in message:
-            print(message['color'])
             try:
                 color_tuple = hex2rgb(message['color'])
                 textColor = graphics.Color(color_tuple[0],
