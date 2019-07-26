@@ -114,3 +114,7 @@ config.yaml
 
 iot/keys/
 iot/keys/*
+.vscode
+config.yaml
+config.yml
+

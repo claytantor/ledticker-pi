@@ -7,7 +7,7 @@ import time
 import base64
 import logging
 import math
-import datetime
+from datetime import datetime
 
 from ledtext import FixedText, ScrollingText
 from ledmetric import NumberMetric
@@ -16,9 +16,11 @@ from ledweather import CurrentWeather, ForecastWeather
 from samplebase import SampleBase
 from rgbmatrix import graphics
 
-from flashlexpi.sdk import FlashlexSDK
+from flashlexiot.sdk import FlashlexSDK
 
-class LedDisplay(SampleBase):
+
+
+class LedDisplay(SampleBase):  
 
     def __init__(self, *args, **kwargs):
         super(LedDisplay, self).__init__(*args, **kwargs)
@@ -30,15 +32,12 @@ class LedDisplay(SampleBase):
 
 
     def get_messages(self, config):
-
-            fn = "{0}/flashlex-pi-python/keys/config.yml".format(pathlib.Path(__file__).resolve().parents[1])
-            sdk = FlashlexSDK(fn)
+            print("getting messages")
+            sdk = FlashlexSDK(config)
             messages = sdk.getSubscribedMessages()
             for message in messages:
                 yield message
                 sdk.removeMessageFromStore(message)
-
-
 
     def run(self):
         """
@@ -50,6 +49,12 @@ decoded message: {"payload": {"message": {"thingName": "foobar30", "text": "woop
             cfg = yaml.load(f, Loader=yaml.FullLoader)
 
         while True:
+            now = datetime.now()
+            date_time = now.strftime("%H:%M")
+            decoded_model = {"elapsed": 15, "type": "text", "color": "#0ad800", "font": "sm-1", "behavior": "fixed", "body": date_time}
+            text = FixedText(self,decoded_model)
+            text.display()
+
             for message in self.get_messages(cfg):
                 print('full message: {0}'.format(json.dumps(message)))
                 decoded_model = message['message']["payload"]["message"]
