@@ -7,7 +7,7 @@ import time
 import base64
 import logging
 import math
-import datetime
+from datetime import datetime
 
 from ledtext import FixedText, ScrollingText
 from ledmetric import NumberMetric
@@ -17,12 +17,9 @@ from samplebase import SampleBase
 from rgbmatrix import graphics
 from expiringdict import ExpiringDict
 
-from flashlexpi.sdk import FlashlexSDK
+from flashlexiot.sdk import FlashlexSDK
 
 import hashlib 
-  
-
-
 
 class LedDisplay(SampleBase):
 
@@ -64,8 +61,6 @@ class LedDisplay(SampleBase):
         for key in self.cache.keys():
             yield self.cache[key]
 
-
-
     def run(self):
         """
         decoded message: {"payload": {"message": {"thingId": "b094aed5-52e5-4c40-954e-77a53dae65a0", "thingName": "foobar2"}}, "retain": 0, "mid": 0, "pos": 0, "topic": "ingress/foobar30"}
@@ -76,6 +71,12 @@ decoded message: {"payload": {"message": {"thingName": "foobar30", "text": "woop
             cfg = yaml.load(f, Loader=yaml.FullLoader)
 
         while True:
+            now = datetime.now()
+            date_time = now.strftime("%H:%M")
+            decoded_model = {"elapsed": 15, "type": "text", "color": "#0ad800", "font": "sm-1", "behavior": "fixed", "body": date_time}
+            text = FixedText(self,decoded_model)
+            text.display()
+
             for message in self.get_messages(cfg):
                 print('full message: {0}'.format(json.dumps(message)))
                 decoded_model = message['message']["payload"]["message"]
