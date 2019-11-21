@@ -15,13 +15,21 @@ from ledweather import CurrentWeather, ForecastWeather
 
 from samplebase import SampleBase
 from rgbmatrix import graphics
+from expiringdict import ExpiringDict
 
 from flashlexpi.sdk import FlashlexSDK
+
+import hashlib 
+  
+
+
 
 class LedDisplay(SampleBase):
 
     def __init__(self, *args, **kwargs):
         super(LedDisplay, self).__init__(*args, **kwargs)
+
+        self.cache = ExpiringDict(max_len=20, max_age_seconds=600)
 
         self.parser.add_argument('--log', type=str, default="INFO", required=False,
                         help='which log level. DEBUG, INFO, WARNING, CRITICAL')
@@ -31,12 +39,30 @@ class LedDisplay(SampleBase):
 
     def get_messages(self, config):
 
-            fn = "{0}/flashlex-pi-python/keys/config.yml".format(pathlib.Path(__file__).resolve().parents[1])
-            sdk = FlashlexSDK(fn)
-            messages = sdk.getSubscribedMessages()
-            for message in messages:
-                yield message
-                sdk.removeMessageFromStore(message)
+        fn = "{0}/flashlex-pi-python/keys/config.yml".format(pathlib.Path(__file__).resolve().parents[1])
+        sdk = FlashlexSDK(fn)
+        messages = sdk.getSubscribedMessages()
+
+        # process new messages
+        for message in messages:
+            # recompute hash without ids
+            #hashdigest = message['_hash']	
+            del message['_id']
+            del message['_hash']
+
+            md5_hash = hashlib.md5(json.dumps(message).encode()) 
+            message['_hash'] = md5_hash.hexdigest()
+
+            # if not in the cache then add it
+            if(self.cache.get(message['_hash']) == None):
+                self.cache[message['_hash']] = message
+
+            # yield message
+            sdk.removeMessageFromStore(message)
+
+        #get all hashes and yield live hashes
+        for key in self.cache.keys():
+            yield self.cache[key]
 
 
 
