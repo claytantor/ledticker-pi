@@ -36,19 +36,25 @@ class LedDisplay(SampleBase):
 
     def get_messages(self, config):
 
-        fn = "{0}/flashlex-pi-python/keys/config.yml".format(pathlib.Path(__file__).resolve().parents[1])
+        fn = "{0}/flashlex-iot-python/keys/config.yml".format(pathlib.Path(__file__).resolve().parents[1])
         sdk = FlashlexSDK(fn)
+        cfg = sdk.loadConfig(fn)
+        sdk.setConfig(cfg)
+        print("config",json.dumps(sdk.getConfig()))
         messages = sdk.getSubscribedMessages()
 
         # process new messages
         for message in messages:
             # recompute hash without ids
             #hashdigest = message['_hash']	
-            del message['_id']
-            del message['_hash']
+            if 'id' in message: 
+               del message['_id']
+            if '_hash' in message: 
+               del message['_hash']
 
             md5_hash = hashlib.md5(json.dumps(message).encode()) 
             message['_hash'] = md5_hash.hexdigest()
+            print(message['_hash'])
 
             # if not in the cache then add it
             if(self.cache.get(message['_hash']) == None):
@@ -60,6 +66,7 @@ class LedDisplay(SampleBase):
         #get all hashes and yield live hashes
         for key in self.cache.keys():
             yield self.cache[key]
+
 
     def run(self):
         """
