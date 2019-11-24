@@ -56,7 +56,7 @@ class CurrentWeather(LedWeather):
         font_path_sm =  os.path.join(os.path.dirname(__file__), 'fonts/5x8.bdf')
         font_path_sm2 =  os.path.join(os.path.dirname(__file__), 'fonts/4x6.bdf')
 
-        #behovior
+        #behavior
         fontBehavior = graphics.Font()
         fontBehavior.LoadFont(font_path_sm2)
         lenBehavior = graphics.DrawText(offscreen_canvas, fontBehavior, 0, 1, textColor, '{0}'.format(self.message['behavior']))
