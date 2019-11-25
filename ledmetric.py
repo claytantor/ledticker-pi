@@ -124,7 +124,6 @@ class PercentMetric(LedMetric):
         fontBehavior = graphics.Font()
         fontBehavior.LoadFont(font_path_sm2)
         lenBehavior = graphics.DrawText(offscreen_canvas, fontBehavior, 0, 1, textColor, '{0}'.format(percentModel['metricName']))
-        #posBehavior = math.ceil((offscreen_canvas.width-lenBehavior)/2.0)
         posBehavior = offscreen_canvas.width  
 
         # font for the metric
@@ -160,9 +159,6 @@ class PercentMetric(LedMetric):
 
             lenBehavior = graphics.DrawText(offscreen_canvas, fontBehavior, posBehavior, hPosBehavior, textColor, '{0}'.format(percentModel['metricName']))
 
-            #wPosUnit = posMetric+lenPercent+1
-
-            #vPosLabel = fontPercent.height+1+fontLabel.height
             vPosLabel = offscreen_canvas.height - 1
 
             lenLabel = graphics.DrawText(offscreen_canvas, fontLabel, posLabel, vPosLabel, textColor, '{0}'.format(percentModel['name']))
