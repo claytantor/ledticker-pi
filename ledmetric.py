@@ -150,7 +150,6 @@ class PercentMetric(LedMetric):
 
         counter=0
         while scrolling:
-            #print time.time(),start_time
             offscreen_canvas.Clear()
 
             lenPercent = graphics.DrawText(offscreen_canvas, fontPercent, posMetric, tempHeight, textColor, v)
@@ -168,7 +167,7 @@ class PercentMetric(LedMetric):
                 posLabel = offscreen_canvas.width
 
 
-            lenBehavior = graphics.DrawText(offscreen_canvas, fontBehavior, posBehavior, 1, textColor, '{0}'.format(percentModel['metricName']))
+            #lenBehavior = graphics.DrawText(offscreen_canvas, fontBehavior, posBehavior, 1, textColor, '{0}'.format(percentModel['metricName']))
             posBehavior -= 1
             if (posBehavior + lenBehavior < 0):
                 posBehavior = offscreen_canvas.width
