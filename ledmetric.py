@@ -44,19 +44,6 @@ class NumberMetric(LedMetric):
         else:
             return False
 
-    # def get_text_color(self, message):
-    #     textColor = graphics.Color(0, 0, 255)
-
-    #     if 'color' in message:
-    #         try:
-    #             color_tuple = hex2rgb(message['color'])
-    #             textColor = graphics.Color(color_tuple[0],
-    #                                        color_tuple[1],
-    #                                        color_tuple[2])
-    #         except:
-    #             pass
-
-    #     return textColor
     
     def display(self):
 
@@ -122,6 +109,7 @@ class PercentMetric(LedMetric):
             'value':'{:.0f}'.format(float(parts[2])*100.0),
             'name':parts[1]
         }
+        print(percentModel)
 
 
         offscreen_canvas = self.runner.matrix.CreateFrameCanvas()
@@ -136,16 +124,23 @@ class PercentMetric(LedMetric):
         fontBehavior = graphics.Font()
         fontBehavior.LoadFont(font_path_sm2)
         lenBehavior = graphics.DrawText(offscreen_canvas, fontBehavior, 0, 1, textColor, '{0}'.format(percentModel['metricName']))
-        posBehavior = math.ceil((offscreen_canvas.width-lenBehavior)/2.0)
+        #posBehavior = math.ceil((offscreen_canvas.width-lenBehavior)/2.0)
+        posBehavior = offscreen_canvas.width  
 
         # font for the metric
         fontPercent = graphics.Font()
         fontPercent.LoadFont(font_path_metric)
-        lenPercent = graphics.DrawText(offscreen_canvas, fontPercent, 0, 1, textColor, '{0}'.format(percentModel['value']))
+        v = percentModel['value']
+        print(v) 
+        lenPercent = graphics.DrawText(offscreen_canvas, fontPercent, 0, 1, textColor, v)
         posMetric = math.ceil((offscreen_canvas.width-lenPercent)/2.0)-2
-
+        
+	# the percentage
         fontUnit = graphics.Font()
         fontUnit.LoadFont(font_path_sm)
+        wPosUnit = posMetric+lenPercent+1
+        tempHeight = math.ceil(offscreen_canvas.width/2.0)+math.ceil((fontPercent.height-2)/2.0)-2
+        graphics.DrawText(offscreen_canvas, fontUnit, wPosUnit, tempHeight, textColor, '%')
 
         # font for the label
         fontLabel = graphics.Font()
@@ -159,7 +154,7 @@ class PercentMetric(LedMetric):
             #print time.time(),start_time
             offscreen_canvas.Clear()
 
-            tempHeight = math.ceil(offscreen_canvas.width/2.0)+math.ceil((fontPercent.height-2)/2.0)-2
+            #tempHeight = math.ceil(offscreen_canvas.width/2.0)+math.ceil((fontPercent.height-2)/2.0)-2
 
             lenPercent = graphics.DrawText(offscreen_canvas, fontPercent, posMetric, tempHeight, textColor, '{0}'.format(parts[1]))
 
@@ -167,10 +162,7 @@ class PercentMetric(LedMetric):
 
             lenBehavior = graphics.DrawText(offscreen_canvas, fontBehavior, posBehavior, hPosBehavior, textColor, '{0}'.format(percentModel['metricName']))
 
-            wPosUnit = posMetric+lenPercent+1
-
-            #the percentage
-            graphics.DrawText(offscreen_canvas, fontUnit, wPosUnit, tempHeight, textColor, '%')
+            #wPosUnit = posMetric+lenPercent+1
 
             #vPosLabel = fontPercent.height+1+fontLabel.height
             vPosLabel = offscreen_canvas.height - 1
@@ -180,6 +172,12 @@ class PercentMetric(LedMetric):
             posLabel -= 1
             if (posLabel + lenLabel < 0):
                 posLabel = offscreen_canvas.width
+
+
+            lenBehavior = graphics.DrawText(offscreen_canvas, fontBehavior, posBehavior, 1, textColor, '{0}'.format(percentModel['metricName']))
+            posBehavior -= 1
+            if (posBehavior + lenBehavior < 0):
+                posBehavior = offscreen_canvas.width
                 counter += 1
                 if counter == 2:
                     scrolling = False
