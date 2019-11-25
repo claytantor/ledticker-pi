@@ -40,7 +40,6 @@ class LedDisplay(SampleBase):
         sdk = FlashlexSDK(fn)
         cfg = sdk.loadConfig(fn)
         sdk.setConfig(cfg)
-        #print("config",json.dumps(sdk.getConfig()))
         messages = sdk.getSubscribedMessages()
 
         # process new messages
@@ -54,6 +53,7 @@ class LedDisplay(SampleBase):
 
             md5_hash = hashlib.md5(json.dumps(message).encode()) 
             message['_hash'] = md5_hash.hexdigest()
+            print(message['_hash'])
 
             # if not in the cache then add it
             if(self.cache.get(message['_hash']) == None):
@@ -69,6 +69,7 @@ class LedDisplay(SampleBase):
         for key in self.cache.keys():
             print("yield from cache", key)
             yield self.cache[key]
+
 
     def run(self):
         """
