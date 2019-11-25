@@ -154,10 +154,8 @@ class PercentMetric(LedMetric):
             #print time.time(),start_time
             offscreen_canvas.Clear()
 
-            #tempHeight = math.ceil(offscreen_canvas.width/2.0)+math.ceil((fontPercent.height-2)/2.0)-2
-
-            lenPercent = graphics.DrawText(offscreen_canvas, fontPercent, posMetric, tempHeight, textColor, '{0}'.format(parts[1]))
-
+            lenPercent = graphics.DrawText(offscreen_canvas, fontPercent, posMetric, tempHeight, textColor, v)
+            graphics.DrawText(offscreen_canvas, fontUnit, wPosUnit, tempHeight, textColor, '%')
             hPosBehavior = fontBehavior.height+1
 
             lenBehavior = graphics.DrawText(offscreen_canvas, fontBehavior, posBehavior, hPosBehavior, textColor, '{0}'.format(percentModel['metricName']))
