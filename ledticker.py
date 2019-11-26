@@ -26,7 +26,7 @@ class LedDisplay(SampleBase):
     def __init__(self, *args, **kwargs):
         super(LedDisplay, self).__init__(*args, **kwargs)
 
-        self.cache = ExpiringDict(max_len=20, max_age_seconds=600)
+        self.cache = ExpiringDict(max_len=20, max_age_seconds=1000)
 
         self.parser.add_argument('--log', type=str, default="INFO", required=False,
                         help='which log level. DEBUG, INFO, WARNING, CRITICAL')
