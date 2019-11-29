@@ -10,20 +10,23 @@ import math
 from datetime import datetime
 
 from ledtext import FixedText, ScrollingText
-from ledmetric import NumberMetric
+from ledmetric import NumberMetric, PercentMetric
 from ledweather import CurrentWeather, ForecastWeather
 
 from samplebase import SampleBase
 from rgbmatrix import graphics
+from expiringdict import ExpiringDict
 
 from flashlexiot.sdk import FlashlexSDK
 
+import hashlib 
 
-
-class LedDisplay(SampleBase):  
+class LedDisplay(SampleBase):
 
     def __init__(self, *args, **kwargs):
         super(LedDisplay, self).__init__(*args, **kwargs)
+
+        self.cache = ExpiringDict(max_len=20, max_age_seconds=1000)
 
         self.parser.add_argument('--log', type=str, default="INFO", required=False,
                         help='which log level. DEBUG, INFO, WARNING, CRITICAL')
@@ -32,12 +35,41 @@ class LedDisplay(SampleBase):
 
 
     def get_messages(self, config):
-            print("getting messages")
-            sdk = FlashlexSDK(config)
-            messages = sdk.getSubscribedMessages()
-            for message in messages:
-                yield message
-                sdk.removeMessageFromStore(message)
+
+        fn = "{0}/flashlex-iot-python/keys/config.yml".format(pathlib.Path(__file__).resolve().parents[1])
+        sdk = FlashlexSDK(fn)
+        cfg = sdk.loadConfig(fn)
+        sdk.setConfig(cfg)
+        messages = sdk.getSubscribedMessages()
+
+        # process new messages
+        for message in messages:
+            # recompute hash without ids
+            #hashdigest = message['_hash']	
+            if 'id' in message: 
+               del message['_id']
+            if '_hash' in message: 
+               del message['_hash']
+
+            md5_hash = hashlib.md5(json.dumps(message).encode()) 
+            message['_hash'] = md5_hash.hexdigest()
+            print(message['_hash'])
+
+            # if not in the cache then add it
+            if(self.cache.get(message['_hash']) == None):
+                print("adding to cache", message['_hash'])
+                self.cache[message['_hash']] = message
+            else:
+                print("message already in cache")
+
+            # yield message
+            sdk.removeMessageFromStore(message)
+
+        #get all hashes and yield live hashes
+        for key in self.cache.keys():
+            print("yield from cache", key)
+            yield self.cache[key]
+
 
     def run(self):
         """
@@ -70,6 +102,9 @@ decoded message: {"payload": {"message": {"thingName": "foobar30", "text": "woop
                     text.display()
                 elif NumberMetric.matches(decoded_model):
                     metric = NumberMetric(self, decoded_model)
+                    metric.display()
+                elif PercentMetric.matches(decoded_model):
+                    metric = PercentMetric(self, decoded_model)
                     metric.display()
                 elif CurrentWeather.matches(decoded_model):
                     weather = CurrentWeather(self, decoded_model)
