@@ -56,19 +56,14 @@ class NumberMetric(LedMetric):
             return False
  
     def display(self):
-        #parts = self.message['body'].split(" ")
         parts = self.message['body'].split("|")
-
         offscreen_canvas = self.runner.matrix.CreateFrameCanvas()
         textColor = self.get_text_color(self.message)
 
         # font for the metric
         fontMetric = graphics.Font()
-        font = graphics.Font()
-        font.LoadFont(self.get_font_path(self.message))
-
+        fontMetric.LoadFont(self.get_font_path(self.message))
         lenMetric = graphics.DrawText(offscreen_canvas, fontMetric, 0, 1, textColor, '{0}'.format(parts[1]))
-
         posMetric = math.ceil((offscreen_canvas.width-lenMetric)/2.0)
 
         # font for the label
@@ -81,9 +76,9 @@ class NumberMetric(LedMetric):
         while scrolling:
             #print time.time(),start_time
             offscreen_canvas.Clear()
-            lenMetric = graphics.DrawText(offscreen_canvas, fontMetric, posMetric, fontMetric.height+1, textColor, '{0}'.format(parts[1]))
+            lenMetric = graphics.DrawText(offscreen_canvas, fontMetric, posMetric, fontMetric.height+5, textColor, '{0}'.format(parts[1]))
 
-            vPosLabel = fontMetric.height+1+fontLabel.height
+            vPosLabel = fontMetric.height+5+fontLabel.height
 
             lenLabel = graphics.DrawText(offscreen_canvas, fontLabel, posLabel, vPosLabel, textColor, '{0}'.format(parts[0]))
 
@@ -119,8 +114,6 @@ class PercentMetric(LedMetric):
             'value':'{:.0f}'.format(float(parts[2])*100.0),
             'name':parts[1]
         }
-        print(percentModel)
-
 
         offscreen_canvas = self.runner.matrix.CreateFrameCanvas()
         textColor = self.get_text_color(self.message)
