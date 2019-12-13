@@ -3,11 +3,6 @@ aws:
     aws_access_key_id: sooper
     aws_secret_access_key: secret/EQp
 
-#codes:
-#  type: file
-#  path: codes.csv
-
-
 codes:
   type: s3
   bucket: dooman-raspian

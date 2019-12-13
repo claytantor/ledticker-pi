@@ -16,6 +16,17 @@ class LedMetric(object):
     def __init__(self, runner, message):
         self.runner = runner
         self.message = message
+    
+    def get_font_path(self, message):
+        #print json.dumps(message)
+        font_path = os.path.join(os.path.dirname(__file__), 'fonts/7x13.bdf')
+        if 'font' in message and message['font'] == 'md-1':
+            font_path =  os.path.join(os.path.dirname(__file__), 'fonts/7x13.bdf')
+        elif 'font' in message and message['font'] == 'sm-1':
+            font_path =  os.path.join(os.path.dirname(__file__), 'fonts/5x8.bdf')
+        elif 'font' in message and message['font'] == 'lg-1':
+            font_path =  os.path.join(os.path.dirname(__file__), 'fonts/9x18.bdf')
+        return font_path
 
     def get_text_color(self, message):
         textColor = graphics.Color(0, 0, 255)
@@ -43,19 +54,18 @@ class NumberMetric(LedMetric):
             return True
         else:
             return False
-
-    
+ 
     def display(self):
-
-        parts = self.message['body'].split(" ")
+        #parts = self.message['body'].split(" ")
+        parts = self.message['body'].split("|")
 
         offscreen_canvas = self.runner.matrix.CreateFrameCanvas()
         textColor = self.get_text_color(self.message)
 
         # font for the metric
         fontMetric = graphics.Font()
-        font_path_metric =  os.path.join(os.path.dirname(__file__), 'fonts/9x18.bdf')
-        fontMetric.LoadFont(font_path_metric)
+        font = graphics.Font()
+        font.LoadFont(self.get_font_path(self.message))
 
         lenMetric = graphics.DrawText(offscreen_canvas, fontMetric, 0, 1, textColor, '{0}'.format(parts[1]))
 
