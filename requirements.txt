@@ -3,4 +3,4 @@ AWSIoTPythonSDK==1.4.4
 tinydb==3.13.0
 PyYAML==5.1
 pathlib==1.0.1
-Pillow==6.2.0
+Pillow==8.2.0
