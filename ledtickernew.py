@@ -8,7 +8,6 @@ import base64
 import logging
 import math
 import copy
-import utils
 
 from datetime import datetime
 
@@ -21,7 +20,7 @@ from rgbmatrix import graphics
 from expiringdict import ExpiringDict
 
 from flashlexiot.sdk import FlashlexSDK
-from pathlib import Path
+
 import hashlib 
 
 class LedDisplay(SampleBase):
@@ -36,11 +35,57 @@ class LedDisplay(SampleBase):
         self.parser.add_argument('--config', type=str, required=True, default='config.yml',
                         help='the name of the configuration section to use.')
 
+
+
     def get_messages(self, config):
-        conn = utils.create_connection('/home/pi/projects/ledticker-pi/db/led_messages.db')  
-        l_m = utils.select_all_messages(conn)
-        utils.delete_all_messages(conn)
-        return l_m
+
+        f = open("./data/messages.json", "r")
+        str_m = f.read();
+        f.close()
+        return json.loads(str_m)
+
+
+    def get_messages_old(self, config):
+
+        fn = "{0}/flashlex-iot-python/keys/config.yml".format(pathlib.Path(__file__).resolve().parents[1])
+        sdk = FlashlexSDK(fn)
+        cfg = sdk.loadConfig(fn)
+        sdk.setConfig(cfg)
+        messages = sdk.getSubscribedMessages()
+
+        # process new messages
+        for message in messages:
+            # recompute hash without ids
+            #hashdigest = message['_hash']	
+            if 'id' in message: 
+               del message['_id']
+            if '_hash' in message: 
+               del message['_hash']
+
+            md5_hash = hashlib.md5(json.dumps(message).encode()) 
+            message['_hash'] = md5_hash.hexdigest()
+            print(message['_hash'])
+
+            # if not in the cache then add it
+            if(self.cache.get(message['_hash']) == None):
+                print("adding to cache", message['_hash'])
+                self.cache[message['_hash']] = message
+            else:
+                print("message already in cache")
+
+            # yield message
+            sdk.removeMessageFromStore(message)
+
+        #get all hashes and yield live hashes
+
+        dict2 = copy.deepcopy(self.cache)
+
+        try:
+           for key in dict2.keys():
+              yield self.cache[key]
+        except:
+              pass
+
 
     def run(self):
         """

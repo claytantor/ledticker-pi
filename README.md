@@ -92,3 +92,5 @@ make a crontab that executes logrotate daily
 ```
 
 
+FLASK_APP=app flask run
+

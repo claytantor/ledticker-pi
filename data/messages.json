@@ -1,0 +1,38 @@
+[
+    {
+        "message": {
+            "payload": {
+                "body": "foo|roo",
+                "color": "#42f584",
+                "type": "metric",
+                "behavior": "number",
+                "font": "sm-1",
+                "elapsed": 20.0
+            }
+        }
+    },
+    {
+        "message": {
+            "payload": {
+                "body": "koo|zoo",
+                "color": "#42aa00",
+                "type": "metric",
+                "behavior": "number",
+                "font": "sm-1",
+                "elapsed": 20.0
+            }
+        }
+    },    
+    {
+        "message": {
+            "payload": {
+                "body": "moo|loo",
+                "color": "#00f584",
+                "type": "metric",
+                "behavior": "number",
+                "font": "sm-1",
+                "elapsed": 20.0
+            }
+        }
+    }
+]
