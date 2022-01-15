@@ -117,4 +117,5 @@ iot/keys/*
 .vscode
 config.yaml
 config.yml
-
+db/
+db/*
