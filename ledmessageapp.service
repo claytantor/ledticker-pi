@@ -1,0 +1,14 @@
+[Unit]
+Description=ledticker
+After=multi-user.target
+
+[Service]
+ExecStart=/home/pi/projects/ledticker-pi/venv/bin/python -u /home/pi/projects/ledticker-pi/app.py 
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=ledticker
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target

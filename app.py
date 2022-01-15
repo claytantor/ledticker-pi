@@ -10,7 +10,7 @@ def save_message():
         request_data = request.get_json()
 
         # insert a record
-        conn = utils.create_connection('db/led_messages.db')  
+        conn = utils.create_connection('/home/pi/projects/ledticker-pi/db/led_messages.db')  
         m_id = utils.create_message(conn, request_data)  
 
         # return a value
