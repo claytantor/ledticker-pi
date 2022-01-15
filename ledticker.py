@@ -1,4 +1,4 @@
-import pathlib
+import pathlib 
 import sys, os
 
 import yaml
@@ -24,6 +24,10 @@ from flashlexiot.sdk import FlashlexSDK
 from pathlib import Path
 import hashlib 
 
+
+db_file = '/home/pi/projects/ledticker-pi/db/led_messages.db'
+
+
 class LedDisplay(SampleBase):
 
     def __init__(self, *args, **kwargs):
@@ -37,8 +41,9 @@ class LedDisplay(SampleBase):
                         help='the name of the configuration section to use.')
 
     def get_messages(self, config):
-        conn = utils.create_connection('/home/pi/projects/ledticker-pi/db/led_messages.db')  
+        conn = utils.create_connection(db_file)  
         l_m = utils.select_all_messages(conn)
+        # print(l_m)
         utils.delete_all_messages(conn)
         return l_m
 
@@ -94,6 +99,21 @@ def main(argv):
     if (not ledDisplay.process()):
         ledDisplay.print_help()
 
+
+
+
+
+def get_messages(conn):
+   #conn = utils.create_connection(db_file)
+   l_m = utils.select_all_messages(conn)
+   utils.delete_all_messages(conn)
+   return l_m
+
+def main_b(argv):
+    print("starting db init")
+    conn = utils.create_connection(db_file)
+    # create_table(conn)
+    get_messages(conn)
 
 if __name__ == "__main__":
     main(sys.argv[1:])

@@ -34,7 +34,7 @@ def create_table(conn):
          ELAPSERED          INT         NOT NULL,
          FONT               CHAR(50)    NOT NULL,
          TYPE               CHAR(50)    NOT NULL,
-         BODY               TEXT        NOT NULL,
+         BODY               CHAR(50)    NOT NULL,
          COLOR              CHAR(7)     NOT NULL,
          BEHAVIOUR          CHAR(50)        
          );''')
@@ -81,16 +81,16 @@ def delete_all_messages(conn):
     conn.commit()
 
 def create_message(conn, led_message):
-
-    led_message_t = (time.time(), led_message['elapsed'], 
+    # print(led_message)
+    led_message_t = (int(led_message['elapsed']), 
         led_message['font'], led_message['type'], 
         led_message['body'], led_message['color'], 
         led_message['behavior'])
-        
-
-    sql = ''' INSERT INTO LED_MESSAGE(ID,ELAPSERED,FONT,TYPE,BODY,COLOR,BEHAVIOUR)
+ 
+    sql = ''' INSERT INTO LED_MESSAGE(ELAPSERED,FONT,TYPE,BODY,COLOR,BEHAVIOUR)
               VALUES(?,?,?,?,?,?,?) '''
     cur = conn.cursor()
+    # print(led_message_t)
     cur.execute(sql, led_message_t)
     conn.commit()
     return cur.lastrowid
