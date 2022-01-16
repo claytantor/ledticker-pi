@@ -88,7 +88,7 @@ def create_message(conn, led_message):
         led_message['behavior'])
  
     sql = ''' INSERT INTO LED_MESSAGE(ELAPSERED,FONT,TYPE,BODY,COLOR,BEHAVIOUR)
-              VALUES(?,?,?,?,?,?,?) '''
+              VALUES(?,?,?,?,?,?) '''
     cur = conn.cursor()
     # print(led_message_t)
     cur.execute(sql, led_message_t)

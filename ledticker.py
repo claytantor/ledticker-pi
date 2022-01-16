@@ -23,9 +23,21 @@ from expiringdict import ExpiringDict
 from flashlexiot.sdk import FlashlexSDK
 from pathlib import Path
 import hashlib 
+import requests
 
+reqUrl = "http://localhost:5000/message"
 
 db_file = '/home/pi/projects/ledticker-pi/db/led_messages.db'
+
+
+def get_messages_new():
+   # conn = utils.create_connection(db_file)
+   # l_m = utils.select_all_messages(conn)
+   # utils.delete_all_messages(conn)
+
+   response = requests.request("GET", reqUrl)
+   return  json.loads(response.text)
+
 
 
 class LedDisplay(SampleBase):
@@ -40,7 +52,7 @@ class LedDisplay(SampleBase):
         self.parser.add_argument('--config', type=str, required=True, default='config.yml',
                         help='the name of the configuration section to use.')
 
-    def get_messages(self, config):
+    def get_messages_old(self, config):
         conn = utils.create_connection(db_file)  
         l_m = utils.select_all_messages(conn)
         # print(l_m)
@@ -63,7 +75,7 @@ decoded message: {"payload": {"message": {"thingName": "foobar30", "text": "woop
             text = FixedText(self,decoded_model)
             text.display()
 
-            for message in self.get_messages(cfg):
+            for message in get_messages_new():
                 print('full message: {0}'.format(json.dumps(message)))
                 decoded_model = message['message']["payload"]
                 print('part to display: {0}'.format(json.dumps(decoded_model)))
@@ -98,16 +110,6 @@ def main(argv):
     ledDisplay = LedDisplay()
     if (not ledDisplay.process()):
         ledDisplay.print_help()
-
-
-
-
-
-def get_messages(conn):
-   #conn = utils.create_connection(db_file)
-   l_m = utils.select_all_messages(conn)
-   utils.delete_all_messages(conn)
-   return l_m
 
 def main_b(argv):
     print("starting db init")
